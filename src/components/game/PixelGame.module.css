@@ -1,0 +1,1679 @@
+.gamePage {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding: 72px 24px 28px;
+  background:
+    linear-gradient(rgba(255, 227, 170, 0.028) 1px, transparent 1px),
+    radial-gradient(circle at 18% 12%, rgba(255, 155, 92, 0.18), transparent 25rem),
+    radial-gradient(circle at 74% 10%, rgba(98, 247, 212, 0.13), transparent 28rem),
+    radial-gradient(circle at 56% 92%, rgba(221, 156, 255, 0.1), transparent 30rem),
+    linear-gradient(135deg, #100d10 0%, #211316 42%, #0a0d12 100%);
+  background-size: 100% 3px, auto, auto, auto, auto;
+}
+
+.gamePage::after {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  content: "";
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.034) 0,
+      rgba(255, 255, 255, 0.034) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.25;
+}
+
+.headerBar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  width: min(1596px, 100%);
+  margin: 0 auto 18px;
+  padding-right: 148px;
+  gap: 24px;
+}
+
+.kicker {
+  margin: 0 0 8px;
+  color: #ffc36d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.headerBar h1 {
+  max-width: 920px;
+  margin: 0;
+  color: #fff0d2;
+  font-size: clamp(2rem, 4.2vw, 4.55rem);
+  line-height: 0.94;
+  text-shadow: 0 0 24px rgba(255, 183, 94, 0.18);
+}
+
+.headerBar p:last-child {
+  max-width: 486px;
+  margin: 0;
+  color: #d8c4a4;
+  line-height: 1.6;
+}
+
+.gameShell {
+  display: grid;
+  grid-template-columns: minmax(0, 1320px) 276px;
+  align-items: start;
+  justify-content: center;
+  gap: 18px;
+  width: min(1620px, 100%);
+  margin: 0 auto;
+}
+
+.sceneFrame {
+  position: relative;
+  padding: 10px;
+  border: 1px solid rgba(255, 214, 148, 0.26);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 210, 122, 0.15), rgba(72, 211, 188, 0.08)),
+    rgba(12, 9, 11, 0.9);
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: filter 180ms ease, opacity 180ms ease;
+}
+
+.sceneTransitioning {
+  filter: saturate(0.65) brightness(0.62);
+  opacity: 0.72;
+}
+
+.room {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow: hidden;
+  border: 4px solid #39241f;
+  border-radius: 6px;
+  background:
+    linear-gradient(to bottom, #1c1418 0 49%, transparent 49%),
+    linear-gradient(to bottom, transparent 0 49%, #2a1a19 49% 100%);
+  image-rendering: pixelated;
+  box-shadow:
+    inset 0 0 0 4px rgba(255, 231, 179, 0.04),
+    inset 0 0 70px rgba(0, 0, 0, 0.72);
+}
+
+.ambientGlow,
+.floorGrid,
+.lightDust,
+.mainWalkway {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ambientGlow {
+  background:
+    radial-gradient(circle at 18% 30%, rgba(99, 247, 212, 0.18), transparent 19%),
+    radial-gradient(circle at 50% 29%, rgba(255, 189, 107, 0.18), transparent 18%),
+    radial-gradient(circle at 77% 29%, rgba(126, 226, 209, 0.14), transparent 20%),
+    radial-gradient(circle at 37% 76%, rgba(244, 211, 94, 0.15), transparent 17%),
+    radial-gradient(circle at 63% 76%, rgba(255, 122, 144, 0.15), transparent 17%);
+  animation: ambientShift 7s ease-in-out infinite alternate;
+}
+
+.cityWindow {
+  position: absolute;
+  top: 6.8%;
+  left: 33.8%;
+  z-index: 1;
+  width: 10.8%;
+  height: 17.2%;
+  border: 5px solid #4d2b23;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, transparent 48%, #4d2b23 48% 53%, transparent 53%),
+    linear-gradient(0deg, transparent 48%, #4d2b23 48% 53%, transparent 53%),
+    radial-gradient(circle at 70% 22%, #ffd876 0 6%, transparent 7%),
+    linear-gradient(#172232, #0c111b);
+  box-shadow:
+    0 14px 60px rgba(255, 192, 99, 0.12),
+    inset 0 0 26px rgba(65, 220, 205, 0.18);
+}
+
+.cityWindow span {
+  position: absolute;
+  bottom: 12%;
+  width: 10%;
+  background: rgba(255, 211, 107, 0.7);
+  box-shadow: 18px -10px 0 rgba(99, 247, 212, 0.55);
+}
+
+.cityWindow span:nth-child(1) {
+  left: 14%;
+  height: 28%;
+}
+
+.cityWindow span:nth-child(2) {
+  left: 42%;
+  height: 42%;
+}
+
+.cityWindow span:nth-child(3) {
+  left: 70%;
+  height: 22%;
+}
+
+.rainWindow {
+  position: absolute;
+  top: 7%;
+  right: 8%;
+  z-index: 1;
+  width: 9.4%;
+  height: 16.4%;
+  border: 5px solid #31404a;
+  border-radius: 3px;
+  overflow: hidden;
+  background: linear-gradient(#0c1828, #101219);
+  box-shadow: inset 0 0 22px rgba(126, 226, 209, 0.15);
+}
+
+.rainWindow span {
+  position: absolute;
+  inset: -40% 0;
+  background: repeating-linear-gradient(
+    105deg,
+    transparent 0 12px,
+    rgba(149, 217, 255, 0.65) 12px 14px,
+    transparent 14px 26px
+  );
+  animation: rainFall 850ms linear infinite;
+}
+
+.floorGrid {
+  top: 49%;
+  background:
+    linear-gradient(45deg, rgba(255, 196, 107, 0.055) 25%, transparent 25% 75%, rgba(255, 196, 107, 0.055) 75%),
+    linear-gradient(45deg, rgba(126, 226, 209, 0.045) 25%, transparent 25% 75%, rgba(126, 226, 209, 0.045) 75%),
+    linear-gradient(#33201d, #201718);
+  background-position: 0 0, 24px 24px, 0 0;
+  background-size: 48px 48px, 48px 48px, 100% 100%;
+}
+
+.lightDust {
+  opacity: 0.4;
+  background:
+    radial-gradient(circle at 16% 64%, rgba(255, 255, 255, 0.34) 0 2px, transparent 3px),
+    radial-gradient(circle at 44% 58%, rgba(126, 226, 209, 0.28) 0 2px, transparent 3px),
+    radial-gradient(circle at 72% 70%, rgba(255, 195, 109, 0.28) 0 2px, transparent 3px),
+    radial-gradient(circle at 88% 53%, rgba(255, 255, 255, 0.22) 0 2px, transparent 3px);
+  animation: dustFloat 6s ease-in-out infinite alternate;
+}
+
+.mainWalkway {
+  top: 47.5%;
+  background:
+    linear-gradient(90deg, transparent 0 2.4%, rgba(255, 231, 179, 0.08) 2.4% 97.6%, transparent 97.6%),
+    linear-gradient(180deg, transparent 0 46%, rgba(99, 247, 212, 0.07) 46% 58%, transparent 58%);
+}
+
+.zone {
+  position: absolute;
+  z-index: 1;
+  border: 2px solid rgba(255, 216, 148, 0.14);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 38%),
+    rgba(18, 14, 16, 0.23);
+  box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.2);
+}
+
+.zone::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 49%;
+  height: 4px;
+  content: "";
+  background: rgba(255, 216, 148, 0.08);
+}
+
+.zone_gaming {
+  border-color: rgba(99, 247, 212, 0.22);
+}
+
+.zone_firmware {
+  border-color: rgba(255, 189, 107, 0.24);
+}
+
+.zone_automation {
+  border-color: rgba(126, 226, 209, 0.24);
+}
+
+.zone_research {
+  border-color: rgba(221, 156, 255, 0.24);
+}
+
+.zone_photography {
+  border-color: rgba(244, 211, 94, 0.26);
+}
+
+.zone_layercade {
+  border-color: rgba(255, 122, 144, 0.26);
+}
+
+.zone_contact {
+  border-color: rgba(134, 247, 185, 0.26);
+}
+
+.zoneSign {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 1;
+  border: 1px solid rgba(255, 216, 148, 0.22);
+  border-radius: 4px;
+  background: rgba(10, 8, 10, 0.68);
+  color: #ffe2a8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: clamp(0.46rem, 0.72vw, 0.66rem);
+  font-weight: 900;
+  padding: 5px 7px;
+  text-transform: uppercase;
+}
+
+.hotspotObject {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  image-rendering: pixelated;
+  padding: 0;
+}
+
+.hotspotObject span:not(.objectLabel) {
+  position: absolute;
+  display: block;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.hotspotObject::after {
+  position: absolute;
+  inset: -7%;
+  content: "";
+  border: 2px solid transparent;
+  border-radius: 8px;
+  opacity: 0;
+  box-shadow: 0 0 24px var(--accent);
+  transition: opacity 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.hotspotActive::after,
+.hotspotObject:focus-visible::after {
+  border-color: color-mix(in srgb, var(--accent) 70%, white);
+  opacity: 0.62;
+  transform: translateY(-2px);
+}
+
+.objectLabel,
+.npcLabel {
+  position: absolute;
+  left: 50%;
+  bottom: -30px;
+  z-index: 4;
+  min-width: max-content;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 216, 148, 0.24);
+  border-radius: 6px;
+  background: rgba(18, 11, 12, 0.78);
+  color: #ffe2a8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: clamp(0.5rem, 0.84vw, 0.66rem);
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0;
+  padding: 6px 7px;
+  text-transform: uppercase;
+  transition: opacity 140ms ease;
+}
+
+.hotspotActive .objectLabel,
+.hotspotObject:focus-visible .objectLabel,
+.hotspotObject:hover .objectLabel,
+.npcActive .npcLabel,
+.npc:hover .npcLabel,
+.npc:focus-visible .npcLabel {
+  opacity: 1;
+}
+
+.setupDesk {
+  left: 3%;
+  top: 63%;
+  width: 94%;
+  height: 18%;
+  border: 4px solid #5b3224;
+  background: linear-gradient(#9c5a37 0 34%, #6e3927 34%);
+}
+
+.ultrawideMonitor {
+  left: 18%;
+  top: 5%;
+  width: 54%;
+  height: 38%;
+  border: 5px solid #101216;
+  border-bottom-width: 12px;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(to bottom, rgba(99, 247, 212, 0.1) 0 2px, transparent 2px 5px),
+    linear-gradient(90deg, rgba(99, 247, 212, 0.9) 0 9%, transparent 9% 16%, rgba(99, 247, 212, 0.72) 16% 74%, transparent 74%),
+    #10231f;
+  box-shadow:
+    0 0 32px rgba(99, 247, 212, 0.34),
+    0 11px 0 rgba(0, 0, 0, 0.26) !important;
+}
+
+.monitorCode {
+  left: 27%;
+  top: 18%;
+  width: 31%;
+  height: 3%;
+  background: #63f7d4;
+  box-shadow:
+    0 9px 0 rgba(99, 247, 212, 0.9),
+    0 18px 0 rgba(99, 247, 212, 0.68),
+    70px 0 0 rgba(255, 189, 107, 0.8),
+    70px 12px 0 rgba(255, 122, 144, 0.72) !important;
+  animation: codeBlink 1.2s steps(2) infinite;
+}
+
+.monitorAura {
+  left: 9%;
+  top: -4%;
+  width: 71%;
+  height: 54%;
+  background: radial-gradient(circle, rgba(99, 247, 212, 0.28), transparent 66%);
+  box-shadow: none !important;
+}
+
+.rgbTower {
+  right: 5%;
+  top: 20%;
+  width: 16%;
+  height: 52%;
+  border: 4px solid #19191f;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent 36%),
+    #202129;
+}
+
+.towerLights {
+  right: 9%;
+  top: 28%;
+  width: 7%;
+  height: 8%;
+  border-radius: 50%;
+  background: #63f7d4;
+  box-shadow:
+    0 22px 0 #ff7a90,
+    0 44px 0 #ffd36b,
+    0 0 22px #63f7d4 !important;
+  animation: rgbCycle 2.6s linear infinite;
+}
+
+.glowKeyboard {
+  left: 28%;
+  top: 70%;
+  width: 31%;
+  height: 7%;
+  background:
+    repeating-linear-gradient(90deg, #151518 0 8px, #2e2c32 8px 10px),
+    #151518;
+  box-shadow: 0 0 18px rgba(99, 247, 212, 0.5) !important;
+}
+
+.glowMouse {
+  left: 62%;
+  top: 69%;
+  width: 7%;
+  height: 8%;
+  border-radius: 50% 50% 45% 45%;
+  background: #1a1b20;
+  box-shadow: 0 0 16px rgba(255, 122, 144, 0.72) !important;
+}
+
+.comfyChair {
+  left: 33%;
+  top: 75%;
+  width: 24%;
+  height: 31%;
+  border-radius: 8px 8px 3px 3px;
+  background:
+    linear-gradient(90deg, #2c3440 0 14%, #4f5661 14% 86%, #2c3440 86%);
+}
+
+.leftSpeaker,
+.rightSpeaker {
+  top: 45%;
+  width: 8%;
+  height: 16%;
+  border: 3px solid #111215;
+  background: radial-gradient(circle, #63f7d4 0 18%, #20232b 19% 60%, #111215 61%);
+}
+
+.leftSpeaker {
+  left: 8%;
+}
+
+.rightSpeaker {
+  left: 74%;
+}
+
+.embeddedBoardA,
+.embeddedBoardB {
+  top: 51%;
+  width: 11%;
+  height: 10%;
+  border: 3px solid #123e35;
+  background:
+    radial-gradient(circle at 24% 32%, #ffd36b 0 8%, transparent 9%),
+    radial-gradient(circle at 72% 62%, #63f7d4 0 8%, transparent 9%),
+    #1b836f;
+}
+
+.embeddedBoardA {
+  left: 18%;
+}
+
+.embeddedBoardB {
+  left: 60%;
+  background-color: #4f9b56;
+}
+
+.nowBuildingWidget {
+  left: 8%;
+  top: 13%;
+  width: 9%;
+  height: 20%;
+  border: 3px solid #33252a;
+  background:
+    linear-gradient(#ffd36b 0 18%, transparent 18%),
+    repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.14) 0 3px, transparent 3px 8px),
+    #16202a;
+}
+
+.labBench {
+  left: 2%;
+  top: 64%;
+  width: 96%;
+  height: 18%;
+  border: 4px solid #604031;
+  background: linear-gradient(#8d5134, #5f382a);
+}
+
+.scopeBody {
+  left: 6%;
+  top: 17%;
+  width: 25%;
+  height: 36%;
+  border: 4px solid #31252a;
+  background: #22303a;
+}
+
+.scopeWave {
+  left: 10%;
+  top: 31%;
+  width: 17%;
+  height: 4%;
+  background: #ffd36b;
+  box-shadow:
+    18px -8px 0 #ffd36b,
+    36px 8px 0 #ffd36b,
+    54px -4px 0 #ffd36b !important;
+  animation: pulseLine 900ms steps(2) infinite;
+}
+
+.logicAnalyzer {
+  left: 36%;
+  top: 30%;
+  width: 21%;
+  height: 20%;
+  border: 4px solid #202027;
+  background:
+    repeating-linear-gradient(90deg, #7ee2d1 0 5px, transparent 5px 12px),
+    #15181c;
+}
+
+.uartCableA,
+.uartCableB {
+  height: 26%;
+  border-right: 3px solid rgba(10, 9, 10, 0.68);
+  border-bottom: 3px solid rgba(10, 9, 10, 0.68);
+  border-radius: 0 0 26px 0;
+}
+
+.uartCableA {
+  left: 42%;
+  top: 50%;
+  width: 22%;
+}
+
+.uartCableB {
+  left: 23%;
+  top: 51%;
+  width: 19%;
+  transform: rotate(7deg);
+}
+
+.stmBoardA,
+.stmBoardB {
+  top: 54%;
+  width: 19%;
+  height: 16%;
+  border: 3px solid #123e35;
+  background:
+    radial-gradient(circle at 20% 30%, #ffd36b 0 8%, transparent 9%),
+    radial-gradient(circle at 76% 68%, #7ee2d1 0 8%, transparent 9%),
+    #197765;
+}
+
+.stmBoardA {
+  left: 12%;
+}
+
+.stmBoardB {
+  left: 67%;
+  background-color: #4f9b56;
+}
+
+.blePulseA,
+.blePulseB {
+  left: 74%;
+  top: 16%;
+  width: 9%;
+  height: 9%;
+  border: 3px solid rgba(126, 226, 209, 0.92);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none !important;
+  animation: blePulse 1.6s ease-out infinite;
+}
+
+.blePulseB {
+  animation-delay: 700ms;
+}
+
+.serverRackBody {
+  left: 5%;
+  top: 4%;
+  width: 33%;
+  height: 82%;
+  border: 5px solid #343034;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #111215, #24242a 44%, #111215);
+}
+
+.serverSlotA,
+.serverSlotB,
+.serverSlotC {
+  left: 9%;
+  width: 25%;
+  height: 12%;
+  border: 3px solid #38333a;
+  background: repeating-linear-gradient(90deg, #0a0c0f 0 8px, #202027 8px 11px);
+}
+
+.serverSlotA {
+  top: 18%;
+}
+
+.serverSlotB {
+  top: 39%;
+}
+
+.serverSlotC {
+  top: 60%;
+}
+
+.serverLeds {
+  left: 28%;
+  top: 23%;
+  width: 4%;
+  height: 5%;
+  background: #75ffbf;
+  box-shadow:
+    0 28px 0 #ffd36b,
+    0 56px 0 #75ffbf,
+    0 0 12px #75ffbf !important;
+  animation: ledBlink 1.4s steps(2) infinite;
+}
+
+.dockerCubeA,
+.dockerCubeB {
+  left: 48%;
+  top: 43%;
+  width: 13%;
+  height: 14%;
+  border: 3px solid #7ee2d1;
+  background: rgba(126, 226, 209, 0.16);
+}
+
+.dockerCubeB {
+  left: 63%;
+  top: 34%;
+}
+
+.jenkinsMonitor {
+  right: 6%;
+  top: 14%;
+  width: 28%;
+  height: 34%;
+  border: 5px solid #151518;
+  border-bottom-width: 10px;
+  background:
+    linear-gradient(90deg, #ff7a90 0 26%, transparent 26% 33%, #75ffbf 33% 68%, transparent 68%),
+    #17212a;
+  box-shadow: 0 0 18px rgba(126, 226, 209, 0.24) !important;
+}
+
+.packetTrail {
+  left: 42%;
+  top: 65%;
+  width: 6%;
+  height: 6%;
+  background: #7ee2d1;
+  box-shadow: 30px 0 0 rgba(126, 226, 209, 0.7), 60px 0 0 rgba(126, 226, 209, 0.4) !important;
+  animation: packetMove 1.5s linear infinite;
+}
+
+.shelfFrame {
+  inset: 0;
+  border: 5px solid #604031;
+  background: linear-gradient(#3a2522, #271b1c);
+}
+
+.shelfLineOne,
+.shelfLineTwo {
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: #74503b;
+}
+
+.shelfLineOne {
+  top: 34%;
+}
+
+.shelfLineTwo {
+  top: 66%;
+}
+
+.booksOne,
+.booksTwo,
+.booksThree {
+  left: 9%;
+  width: 82%;
+  height: 18%;
+  background:
+    linear-gradient(90deg, #dd9cff 0 12%, #f4d35e 12% 22%, #7ee2d1 22% 36%, #c97b52 36% 48%, #86f7b9 48% 61%, #ff7a90 61% 74%, #a3b4ff 74% 86%, #ffbd6b 86%);
+}
+
+.booksOne {
+  top: 11%;
+}
+
+.booksTwo {
+  top: 43%;
+}
+
+.booksThree {
+  top: 75%;
+}
+
+.cameraShelfBoard {
+  left: 0;
+  top: 72%;
+  width: 100%;
+  height: 11%;
+  background: #7a4530;
+}
+
+.cameraBody {
+  left: 34%;
+  top: 24%;
+  width: 31%;
+  height: 27%;
+  border: 4px solid #151518;
+  background: linear-gradient(#3d4149 0 28%, #20232b 28%);
+}
+
+.cameraLens {
+  left: 44%;
+  top: 31%;
+  width: 13%;
+  height: 15%;
+  border: 4px solid #090b0e;
+  border-radius: 50%;
+  background: radial-gradient(circle at 55% 48%, #9ee7ff 0 18%, #1d252d 19% 58%, #050607 60%);
+}
+
+.photoFrameOne,
+.photoFrameTwo {
+  top: 16%;
+  width: 19%;
+  height: 29%;
+  border: 4px solid #f4d35e;
+  background: linear-gradient(145deg, #2d4c60 0 52%, #f4d35e 53% 62%, #203226 63%);
+}
+
+.photoFrameOne {
+  left: 6%;
+}
+
+.photoFrameTwo {
+  right: 8%;
+  border-color: #ff7a90;
+}
+
+.tripod {
+  left: 67%;
+  top: 48%;
+  width: 4%;
+  height: 34%;
+  background: #262832;
+  box-shadow:
+    -18px 52px 0 -3px #262832,
+    18px 52px 0 -3px #262832 !important;
+}
+
+.softbox {
+  left: 6%;
+  top: 47%;
+  width: 20%;
+  height: 23%;
+  clip-path: polygon(12% 0, 100% 15%, 82% 100%, 0 82%);
+  background: rgba(255, 236, 182, 0.78);
+  box-shadow: 0 0 22px rgba(255, 211, 107, 0.35) !important;
+}
+
+.editingMonitor {
+  left: 37%;
+  top: 52%;
+  width: 23%;
+  height: 19%;
+  border: 4px solid #151518;
+  background:
+    linear-gradient(135deg, #ff7a90 0 31%, #f4d35e 32% 54%, #2d4c60 55%);
+}
+
+.printerFrame {
+  left: 7%;
+  top: 7%;
+  width: 53%;
+  height: 56%;
+  border: 6px solid #3b3540;
+  background:
+    linear-gradient(90deg, transparent 47%, #3b3540 47% 53%, transparent 53%),
+    rgba(255, 255, 255, 0.03);
+}
+
+.printerBed {
+  left: 12%;
+  top: 63%;
+  width: 45%;
+  height: 9%;
+  background: #56464a;
+}
+
+.printerHead {
+  left: 27%;
+  top: 23%;
+  width: 12%;
+  height: 13%;
+  background: #ff7a90;
+  box-shadow: 0 0 14px rgba(255, 122, 144, 0.32) !important;
+  animation: printHead 1.9s ease-in-out infinite alternate;
+}
+
+.printModel {
+  left: 27%;
+  top: 52%;
+  width: 13%;
+  height: 11%;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: #7ee2d1;
+}
+
+.spool {
+  right: 7%;
+  top: 3%;
+  width: 18%;
+  height: 22%;
+  border: 6px solid #ffbd6b;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 0 30%, rgba(255, 189, 107, 0.7) 31% 50%, transparent 51%);
+}
+
+.keycaps {
+  right: 8%;
+  top: 63%;
+  width: 19%;
+  height: 9%;
+  background: repeating-linear-gradient(90deg, #f4d35e 0 10px, #ff7a90 10px 20px, #7ee2d1 20px 30px);
+}
+
+.carDiorama {
+  right: 7%;
+  top: 36%;
+  width: 28%;
+  height: 17%;
+  border-bottom: 6px solid #57444a;
+  background:
+    linear-gradient(90deg, transparent 0 14%, #ff7a90 14% 62%, transparent 62%),
+    radial-gradient(circle at 27% 75%, #111 0 9%, transparent 10%),
+    radial-gradient(circle at 58% 75%, #111 0 9%, transparent 10%);
+}
+
+.printShelf {
+  right: 2%;
+  top: 29%;
+  width: 36%;
+  height: 5%;
+  background: #74503b;
+}
+
+.terminalDesk {
+  left: 0;
+  top: 70%;
+  width: 100%;
+  height: 22%;
+  background: #6a3c2c;
+}
+
+.terminalScreen {
+  left: 18%;
+  top: 13%;
+  width: 58%;
+  height: 45%;
+  border: 5px solid #101216;
+  border-bottom-width: 10px;
+  background:
+    repeating-linear-gradient(to bottom, rgba(134, 247, 185, 0.12) 0 2px, transparent 2px 5px),
+    linear-gradient(90deg, rgba(134, 247, 185, 0.95) 0 10%, transparent 10% 18%, rgba(134, 247, 185, 0.72) 18% 70%, transparent 70%),
+    #10211c;
+  box-shadow: 0 0 22px rgba(134, 247, 185, 0.22) !important;
+}
+
+.terminalText {
+  left: 26%;
+  top: 31%;
+  width: 35%;
+  height: 5%;
+  background: #86f7b9;
+  box-shadow:
+    0 11px 0 #86f7b9,
+    0 22px 0 rgba(134, 247, 185, 0.7) !important;
+  animation: codeBlink 1.4s steps(2) infinite;
+}
+
+.keyboard {
+  left: 22%;
+  top: 63%;
+  width: 48%;
+  height: 8%;
+  background: repeating-linear-gradient(90deg, #151518 0 8px, #2e2c32 8px 10px);
+}
+
+.mug {
+  right: 13%;
+  top: 58%;
+  width: 12%;
+  height: 16%;
+  border: 3px solid #f7e9cf;
+  background: #ffbd6b;
+}
+
+.player {
+  position: absolute;
+  z-index: 5;
+  width: 2.58%;
+  height: 6.05%;
+  transform: translate(-50%, -82%);
+  image-rendering: pixelated;
+}
+
+.player span {
+  position: absolute;
+  display: block;
+}
+
+.playerShadow {
+  left: 12%;
+  bottom: -10%;
+  width: 78%;
+  height: 17%;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.36);
+}
+
+.playerHair {
+  left: 25%;
+  top: 2%;
+  width: 50%;
+  height: 25%;
+  background: #221819;
+  box-shadow:
+    -5px 6px 0 #221819,
+    5px 6px 0 #221819;
+}
+
+.playerHead {
+  left: 24%;
+  top: 17%;
+  width: 52%;
+  height: 25%;
+  background: #d89a66;
+  box-shadow:
+    -4px 7px 0 #d89a66,
+    4px 7px 0 #d89a66;
+}
+
+.playerBody {
+  left: 20%;
+  top: 44%;
+  width: 60%;
+  height: 31%;
+  background: linear-gradient(90deg, #314450 0 20%, #5cc8bb 20% 80%, #314450 80%);
+}
+
+.playerPack {
+  right: 4%;
+  top: 45%;
+  width: 21%;
+  height: 29%;
+  background: #5f3b30;
+}
+
+.playerLegLeft,
+.playerLegRight {
+  top: 75%;
+  width: 24%;
+  height: 20%;
+  background: #273541;
+}
+
+.playerLegLeft {
+  left: 22%;
+}
+
+.playerLegRight {
+  right: 22%;
+}
+
+.left .playerPack {
+  left: 4%;
+  right: auto;
+}
+
+.right .playerPack {
+  right: 4%;
+}
+
+.up .playerHead {
+  background: #b97850;
+}
+
+.walking .playerLegLeft {
+  animation: stepLeft 320ms steps(2) infinite;
+}
+
+.walking .playerLegRight {
+  animation: stepRight 320ms steps(2) infinite;
+}
+
+.npc {
+  position: absolute;
+  z-index: 4;
+  width: 38px;
+  height: 42px;
+  transform: translate(-50%, -86%);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  image-rendering: pixelated;
+}
+
+.npc span:not(.npcLabel) {
+  position: absolute;
+  display: block;
+}
+
+.npc::after {
+  position: absolute;
+  inset: -8px;
+  content: "";
+  border: 2px solid transparent;
+  border-radius: 8px;
+  opacity: 0;
+  box-shadow: 0 0 18px var(--accent);
+}
+
+.npcActive::after,
+.npc:focus-visible::after {
+  border-color: var(--accent);
+  opacity: 0.62;
+}
+
+.npcShadow {
+  left: 12%;
+  bottom: -4%;
+  width: 76%;
+  height: 15%;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.36);
+}
+
+.npcAntenna {
+  left: 48%;
+  top: 0;
+  width: 5%;
+  height: 18%;
+  background: var(--accent);
+  box-shadow: 0 -4px 0 var(--accent);
+}
+
+.npcHead {
+  left: 24%;
+  top: 15%;
+  width: 52%;
+  height: 28%;
+  border: 3px solid #151518;
+  background: #e9d7b8;
+}
+
+.npcFace {
+  left: 34%;
+  top: 27%;
+  width: 8%;
+  height: 7%;
+  background: #151518;
+  box-shadow: 12px 0 0 #151518;
+}
+
+.npcBody {
+  left: 20%;
+  top: 46%;
+  width: 60%;
+  height: 35%;
+  border: 3px solid #151518;
+  background: var(--accent);
+  animation: npcIdle 1.8s ease-in-out infinite alternate;
+}
+
+.zoneIndicator {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 6;
+  width: min(238px, calc(100% - 24px));
+  border: 1px solid rgba(255, 216, 148, 0.25);
+  border-radius: 8px;
+  background: rgba(10, 8, 10, 0.78);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+  color: #fff0d2;
+  padding: 10px 12px;
+}
+
+.zoneIndicator span,
+.achievementToast span {
+  color: #ffc36d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.zoneIndicator strong,
+.achievementToast strong {
+  display: block;
+  margin-top: 3px;
+  color: #fff0d2;
+  font-size: 0.96rem;
+}
+
+.zoneIndicator p {
+  margin: 4px 0 0;
+  color: #d8c4a4;
+  font-size: 0.76rem;
+}
+
+.achievementToast {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 7;
+  width: min(306px, calc(100% - 28px));
+  border: 1px solid rgba(134, 247, 185, 0.35);
+  border-radius: 8px;
+  background: rgba(11, 16, 16, 0.9);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.38), 0 0 24px rgba(126, 226, 209, 0.16);
+  padding: 12px 14px;
+  animation: toastIn 260ms ease both;
+}
+
+.inspectPrompt {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 6;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 221, 159, 0.28);
+  border-radius: 8px;
+  background: rgba(18, 12, 12, 0.88);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.38);
+  color: #fff0d2;
+  font-weight: 800;
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.inspectPrompt kbd {
+  display: inline-grid;
+  min-width: 28px;
+  min-height: 26px;
+  place-items: center;
+  margin-right: 7px;
+  border: 1px solid rgba(255, 211, 107, 0.5);
+  border-bottom-width: 3px;
+  border-radius: 6px;
+  background: #33211c;
+  color: #ffd36b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.statusPanel {
+  display: grid;
+  gap: 12px;
+}
+
+.statusPanel div {
+  border: 1px solid rgba(255, 214, 148, 0.22);
+  border-radius: 8px;
+  background: rgba(23, 16, 17, 0.74);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 16px;
+}
+
+.statusPanel span {
+  color: #ffc36d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.statusPanel p {
+  margin: 8px 0 0;
+  color: #e6d0ad;
+  line-height: 1.55;
+}
+
+.recruiterButton {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 20;
+  border: 1px solid rgba(255, 218, 157, 0.3);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd36b, #ff9e6b);
+  box-shadow: 0 15px 34px rgba(0, 0, 0, 0.32);
+  color: #21130f;
+  cursor: pointer;
+  font-weight: 900;
+  padding: 11px 15px;
+}
+
+.modalBackdrop,
+.recruiterBackdrop,
+.dialogBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(255, 189, 107, 0.18), transparent 30rem),
+    rgba(5, 4, 5, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.modalCard,
+.recruiterPanel,
+.dialogBox {
+  width: min(640px, 100%);
+  border: 1px solid rgba(255, 216, 148, 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 120px),
+    #191112;
+  box-shadow:
+    0 28px 92px rgba(0, 0, 0, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.welcomeCard {
+  width: min(590px, 100%);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modalHeader p {
+  margin: 0;
+  color: #ffc36d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.modalHeader button,
+.dialogActions button {
+  border: 1px solid rgba(255, 216, 148, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f8ead0;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 9px 12px;
+}
+
+.modalCard h2,
+.recruiterPanel h2,
+.dialogBox h2 {
+  margin: 18px 0 0;
+  color: #fff2d7;
+  font-size: clamp(1.75rem, 4vw, 3.05rem);
+  line-height: 1;
+}
+
+.modalSummary,
+.recruiterPanel > p,
+.dialogLine {
+  margin: 18px 0 0;
+  color: #dfc8a7;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.dialogLine {
+  min-height: 5.1rem;
+  color: #f3dec0;
+  font-size: 1.08rem;
+}
+
+.modalCard ul {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modalCard li {
+  position: relative;
+  border-left: 3px solid #ffc36d;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.045);
+  color: #f3dec0;
+  line-height: 1.45;
+  padding: 10px 12px;
+}
+
+.primaryCta,
+.secondaryCta {
+  display: inline-flex;
+  margin-top: 22px;
+  border: 1px solid rgba(255, 211, 107, 0.44);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffd36b, #ff9d6b);
+  color: #22110d;
+  font-weight: 900;
+  padding: 12px 15px;
+  text-decoration: none;
+}
+
+.secondaryCta {
+  margin-top: 0;
+  background: rgba(126, 226, 209, 0.14);
+  color: #fff0d2;
+}
+
+.dialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.controlsList {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 0;
+}
+
+.controlsList div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid rgba(255, 216, 148, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 11px 12px;
+}
+
+.controlsList dt,
+.controlsList dd {
+  margin: 0;
+}
+
+.controlsList dt {
+  color: #fff0d2;
+  font-weight: 900;
+}
+
+.controlsList dd {
+  color: #ffc36d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.zoneJumpGrid,
+.recruiterLinks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.zoneJumpGrid button,
+.recruiterLinks a {
+  border: 1px solid rgba(255, 216, 148, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #fff0d2;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 850;
+  padding: 13px 14px;
+  text-align: left;
+  text-decoration: none;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.zoneJumpGrid button:hover,
+.recruiterLinks a:hover {
+  background: rgba(255, 195, 109, 0.14);
+  transform: translateY(-1px);
+}
+
+.mobileControls {
+  display: none;
+  grid-column: 1 / -1;
+  border: 1px solid rgba(255, 214, 148, 0.2);
+  border-radius: 8px;
+  background: rgba(23, 16, 17, 0.72);
+  padding: 14px;
+}
+
+.mobileControls p {
+  margin: 0 0 10px;
+  color: #d8c4a4;
+}
+
+.touchGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 52px);
+  grid-template-areas:
+    ". up ."
+    "left inspect right"
+    ". down .";
+  gap: 8px;
+  justify-content: center;
+}
+
+.touchGrid button {
+  width: 52px;
+  height: 46px;
+  border: 1px solid rgba(255, 216, 148, 0.24);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff0d2;
+  font-weight: 900;
+}
+
+.touchGrid button:nth-child(1) {
+  grid-area: up;
+}
+
+.touchGrid button:nth-child(2) {
+  grid-area: left;
+}
+
+.touchGrid button:nth-child(3) {
+  grid-area: inspect;
+  background: rgba(255, 195, 109, 0.22);
+  color: #ffd36b;
+}
+
+.touchGrid button:nth-child(4) {
+  grid-area: right;
+}
+
+.touchGrid button:nth-child(5) {
+  grid-area: down;
+}
+
+@keyframes ambientShift {
+  to {
+    filter: hue-rotate(8deg) brightness(1.08);
+  }
+}
+
+@keyframes rainFall {
+  to {
+    transform: translateY(34px);
+  }
+}
+
+@keyframes dustFloat {
+  to {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes codeBlink {
+  50% {
+    opacity: 0.58;
+  }
+}
+
+@keyframes rgbCycle {
+  33% {
+    background: #ff7a90;
+    box-shadow:
+      0 22px 0 #ffd36b,
+      0 44px 0 #63f7d4,
+      0 0 22px #ff7a90 !important;
+  }
+  66% {
+    background: #ffd36b;
+    box-shadow:
+      0 22px 0 #63f7d4,
+      0 44px 0 #ff7a90,
+      0 0 22px #ffd36b !important;
+  }
+}
+
+@keyframes pulseLine {
+  50% {
+    transform: translateX(8px);
+  }
+}
+
+@keyframes blePulse {
+  from {
+    opacity: 0.92;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.8);
+  }
+}
+
+@keyframes ledBlink {
+  50% {
+    opacity: 0.42;
+  }
+}
+
+@keyframes packetMove {
+  to {
+    transform: translateX(88px);
+  }
+}
+
+@keyframes printHead {
+  to {
+    transform: translateX(52px);
+  }
+}
+
+@keyframes npcIdle {
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes stepLeft {
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes stepRight {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1320px) {
+  .gameShell {
+    grid-template-columns: minmax(0, 1320px);
+  }
+
+  .statusPanel {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .gamePage {
+    padding: 18px;
+  }
+
+  .headerBar {
+    display: grid;
+    padding-right: 0;
+  }
+
+  .headerBar p:last-child {
+    max-width: none;
+  }
+
+  .sceneFrame {
+    padding: 7px;
+  }
+
+  .room {
+    min-height: 430px;
+    overflow: hidden;
+  }
+
+  .statusPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .mobileControls {
+    display: block;
+  }
+
+  .recruiterButton {
+    position: sticky;
+    top: 12px;
+    display: block;
+    margin-left: auto;
+  }
+
+  .zoneJumpGrid,
+  .recruiterLinks {
+    grid-template-columns: 1fr;
+  }
+
+  .inspectPrompt {
+    width: calc(100% - 24px);
+  }
+}
+
+@media (max-width: 560px) {
+  .headerBar h1 {
+    font-size: 2rem;
+  }
+
+  .zoneIndicator {
+    position: static;
+    width: auto;
+    margin: 8px;
+  }
+
+  .zoneSign,
+  .objectLabel,
+  .npcLabel {
+    display: none;
+  }
+
+  .modalCard,
+  .recruiterPanel,
+  .dialogBox {
+    max-height: calc(100vh - 40px);
+    overflow: auto;
+  }
+}
