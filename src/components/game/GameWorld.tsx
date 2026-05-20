@@ -28,6 +28,16 @@ export function GameWorld({ children }: GameWorldProps) {
       <div className={styles.floorGrid} />
       <div className={styles.lightDust} />
       <div className={styles.mainWalkway} />
+      <div className={styles.environmentDetails} aria-hidden="true">
+        <span className={styles.stickyNotes} />
+        <span className={styles.whiteboardDiagram} />
+        <span className={styles.rcCarShelf} />
+        <span className={styles.cameraLensRack} />
+        <span className={styles.filamentRack} />
+        <span className={styles.devBoardCluster} />
+        <span className={styles.ledStripTop} />
+        <span className={styles.ledStripBottom} />
+      </div>
 
       {gameZones.map((zone) => (
         <div

@@ -74,6 +74,22 @@ function renderObject(id: Hotspot["id"]) {
           <span className={styles.blePulseB} />
         </>
       );
+    case "ble-scanner-station":
+      return (
+        <>
+          <span className={styles.scanStationBase} />
+          <span className={styles.scanStationDish} />
+          <span className={styles.scanStationPulse} />
+        </>
+      );
+    case "uart-dma-visualizer":
+      return (
+        <>
+          <span className={styles.routeStationBase} />
+          <span className={styles.routeStationScreen} />
+          <span className={styles.routeStationBytes} />
+        </>
+      );
     case "automation-stack":
       return (
         <>
@@ -88,6 +104,14 @@ function renderObject(id: Hotspot["id"]) {
           <span className={styles.packetTrail} />
         </>
       );
+    case "iot-packet-router":
+      return (
+        <>
+          <span className={styles.routerStationBase} />
+          <span className={styles.routerStationNodes} />
+          <span className={styles.routerStationPacket} />
+        </>
+      );
     case "bookshelf":
       return (
         <>
@@ -97,6 +121,14 @@ function renderObject(id: Hotspot["id"]) {
           <span className={styles.booksOne} />
           <span className={styles.booksTwo} />
           <span className={styles.booksThree} />
+        </>
+      );
+    case "research-console":
+      return (
+        <>
+          <span className={styles.researchConsoleBase} />
+          <span className={styles.researchConsoleScreen} />
+          <span className={styles.researchConsoleGlow} />
         </>
       );
     case "photography-corner":
@@ -112,6 +144,14 @@ function renderObject(id: Hotspot["id"]) {
           <span className={styles.editingMonitor} />
         </>
       );
+    case "photo-gallery-wall":
+      return (
+        <>
+          <span className={styles.galleryWallFrameA} />
+          <span className={styles.galleryWallFrameB} />
+          <span className={styles.galleryWallFrameC} />
+        </>
+      );
     case "layercade-workshop":
       return (
         <>
@@ -123,6 +163,15 @@ function renderObject(id: Hotspot["id"]) {
           <span className={styles.keycaps} />
           <span className={styles.carDiorama} />
           <span className={styles.printShelf} />
+        </>
+      );
+    case "layercade-showcase":
+      return (
+        <>
+          <span className={styles.showcaseShelf} />
+          <span className={styles.showcaseItemA} />
+          <span className={styles.showcaseItemB} />
+          <span className={styles.showcaseItemC} />
         </>
       );
     case "terminal-desk":

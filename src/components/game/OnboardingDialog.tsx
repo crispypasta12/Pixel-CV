@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import styles from "./PixelGame.module.css";
 
 type OnboardingDialogProps = {
@@ -7,6 +8,15 @@ type OnboardingDialogProps = {
 };
 
 export function OnboardingDialog({ onClose }: OnboardingDialogProps) {
+  const startButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    startButtonRef.current?.focus();
+
+    return () => previousFocus?.focus();
+  }, []);
+
   return (
     <div
       aria-labelledby="welcome-title"
@@ -17,7 +27,7 @@ export function OnboardingDialog({ onClose }: OnboardingDialogProps) {
       <article className={`${styles.modalCard} ${styles.welcomeCard}`}>
         <div className={styles.modalHeader}>
           <p>Welcome</p>
-          <button type="button" onClick={onClose}>
+          <button ref={startButtonRef} type="button" onClick={onClose}>
             Start
           </button>
         </div>

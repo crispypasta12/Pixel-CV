@@ -52,6 +52,42 @@ export const gameHotspots: Hotspot[] = [
     accent: "#ffbd6b",
   },
   {
+    id: "ble-scanner-station",
+    zoneId: "firmware",
+    objectName: "BLE Scanner",
+    title: "BLE Scanner Station",
+    summary:
+      "A simulated BLE discovery station for nearby embedded, IoT, creative, and research beacons.",
+    highlights: [
+      "Start and stop simulated scan workflows",
+      "Inspect RSSI, services, and portfolio-safe device details",
+      "Connect BLE concepts to real embedded project themes",
+    ],
+    ctaLabel: "Open BLE Scanner",
+    ctaHref: `${CLASSIC_PORTFOLIO_URL}/#work`,
+    position: { x: 572, y: 246 },
+    size: { width: 92, height: 72 },
+    accent: "#7ee2d1",
+  },
+  {
+    id: "uart-dma-visualizer",
+    zoneId: "firmware",
+    objectName: "UART/DMA Visualizer",
+    title: "UART + DMA Routing Visualization",
+    summary:
+      "A simplified embedded data path showing UART bytes moving through DMA into a circular buffer and out to a cellular module.",
+    highlights: [
+      "Tool UART to USART2 RX route",
+      "DMA channel and circular buffer model",
+      "LPUART1 TX forwarding to cellular module",
+    ],
+    ctaLabel: "Open Visualizer",
+    ctaHref: `${CLASSIC_PORTFOLIO_URL}/#work`,
+    position: { x: 690, y: 246 },
+    size: { width: 96, height: 72 },
+    accent: "#ffbd6b",
+  },
+  {
     id: "automation-stack",
     zoneId: "automation",
     objectName: "Automation Stack",
@@ -71,6 +107,24 @@ export const gameHotspots: Hotspot[] = [
     accent: "#7ee2d1",
   },
   {
+    id: "iot-packet-router",
+    zoneId: "automation",
+    objectName: "IoT Router",
+    title: "MQTT / IoT Packet Router",
+    summary:
+      "A local visual simulation of tool payloads moving through BLE, cellular, MQTT, cloud ingestion, and a dashboard.",
+    highlights: [
+      "Animated packet route",
+      "Simulated MQTT connection status",
+      "Local-only event log with retry feedback",
+    ],
+    ctaLabel: "Open IoT Router",
+    ctaHref: `${CLASSIC_PORTFOLIO_URL}/#work`,
+    position: { x: 1034, y: 250 },
+    size: { width: 104, height: 68 },
+    accent: "#86f7b9",
+  },
+  {
     id: "bookshelf",
     zoneId: "research",
     objectName: "Research Shelf",
@@ -87,6 +141,24 @@ export const gameHotspots: Hotspot[] = [
     ctaHref: `${CLASSIC_PORTFOLIO_URL}/#research`,
     position: { x: 72, y: 440 },
     size: { width: 214, height: 150 },
+    accent: "#dd9cff",
+  },
+  {
+    id: "research-console",
+    zoneId: "research",
+    objectName: "Research Console",
+    title: "Research Console",
+    summary:
+      "Interactive simulated research panels for firmware malware detection and power system cybersecurity.",
+    highlights: [
+      "Firmware sample analysis walkthrough",
+      "Byte-pattern visualization",
+      "Cyber-physical anomaly detection concept",
+    ],
+    ctaLabel: "Open Research Console",
+    ctaHref: `${CLASSIC_PORTFOLIO_URL}/#research`,
+    position: { x: 212, y: 548 },
+    size: { width: 86, height: 62 },
     accent: "#dd9cff",
   },
   {
@@ -109,6 +181,24 @@ export const gameHotspots: Hotspot[] = [
     accent: "#f4d35e",
   },
   {
+    id: "photo-gallery-wall",
+    zoneId: "photography",
+    objectName: "Gallery Wall",
+    title: "Interactive Photography Gallery",
+    summary:
+      "A compact framed gallery for street, portrait, product, and cinematic visual storytelling.",
+    highlights: [
+      "Category-filtered gallery cards",
+      "Pixel frame styling",
+      "Photography and product storytelling CTAs",
+    ],
+    ctaLabel: "Open Gallery",
+    ctaHref: `${CLASSIC_PORTFOLIO_URL}/#hobbies`,
+    position: { x: 448, y: 488 },
+    size: { width: 118, height: 78 },
+    accent: "#f4d35e",
+  },
+  {
     id: "layercade-workshop",
     zoneId: "layercade",
     objectName: "Layercade Workshop",
@@ -125,6 +215,24 @@ export const gameHotspots: Hotspot[] = [
     ctaHref: `${CLASSIC_PORTFOLIO_URL}/#hobbies`,
     position: { x: 716, y: 428 },
     size: { width: 234, height: 178 },
+    accent: "#ff7a90",
+  },
+  {
+    id: "layercade-showcase",
+    zoneId: "layercade",
+    objectName: "Product Showcase",
+    title: "Layercade Product Showcase",
+    summary:
+      "A lightweight product wall for 3D printed dioramas, keycaps, desk accessories, and display models.",
+    highlights: [
+      "Interactive product cards",
+      "Start Print prototype feedback",
+      "Layercade creative technical branding",
+    ],
+    ctaLabel: "Open Showcase",
+    ctaHref: `${CLASSIC_PORTFOLIO_URL}/#hobbies`,
+    position: { x: 862, y: 528 },
+    size: { width: 86, height: 78 },
     accent: "#ff7a90",
   },
   {

@@ -15,7 +15,10 @@ export function DialogBox({ npc, onClose }: DialogBoxProps) {
   const isLastLine = lineIndex >= npc.lines.length - 1;
 
   useEffect(() => {
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeButtonRef.current?.focus();
+
+    return () => previousFocus?.focus();
   }, [npc.id]);
 
   return (

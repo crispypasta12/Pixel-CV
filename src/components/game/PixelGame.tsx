@@ -1,21 +1,67 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { gameHotspots } from "@/data/gameHotspots";
 import { gameNPCs } from "@/data/gameNPCs";
 import { gameZones, WORLD_HEIGHT, WORLD_WIDTH } from "@/data/gameZones";
-import type { Direction, GameNpc, Hotspot, Point, ZoneId } from "@/types/game";
+import { trackPortfolioEvent } from "@/lib/portfolioAnalytics";
+import type {
+  AchievementId,
+  DemoId,
+  Direction,
+  GameNpc,
+  Hotspot,
+  HotspotId,
+  Point,
+  ZoneId,
+} from "@/types/game";
+import { AboutExperienceModal } from "./AboutExperienceModal";
 import { AchievementToast } from "./AchievementToast";
+import { CinematicIntro } from "./CinematicIntro";
 import { DialogBox } from "./DialogBox";
 import { GameWorld } from "./GameWorld";
+import { GuidedTour } from "./GuidedTour";
+import { HelpOverlay } from "./HelpOverlay";
 import { HotspotObject } from "./HotspotObject";
+import { ImpactCards } from "./ImpactCards";
 import { InteractionModal } from "./InteractionModal";
 import { NPC } from "./NPC";
 import { OnboardingDialog } from "./OnboardingDialog";
+import { PhotographyGallery } from "./PhotographyGallery";
 import { Player } from "./Player";
+import { QuickJumpOverlay } from "./QuickJumpOverlay";
 import { RecruiterOverlay } from "./RecruiterOverlay";
+import { SoundControls } from "./SoundControls";
+import { ViewToggle } from "./ViewToggle";
+import { WorldFeedback } from "./WorldFeedback";
 import { ZoneIndicator } from "./ZoneIndicator";
 import styles from "./PixelGame.module.css";
+
+const BLEScannerDemo = dynamic(
+  () => import("./BLEScannerDemo").then((module) => module.BLEScannerDemo),
+  { loading: DemoLoading },
+);
+const GameTerminal = dynamic(
+  () => import("./GameTerminal").then((module) => module.GameTerminal),
+  { loading: DemoLoading },
+);
+const IoTPacketRouter = dynamic(
+  () => import("./IoTPacketRouter").then((module) => module.IoTPacketRouter),
+  { loading: DemoLoading },
+);
+const LayercadeShowcase = dynamic(
+  () => import("./LayercadeShowcase").then((module) => module.LayercadeShowcase),
+  { loading: DemoLoading },
+);
+const ResearchConsole = dynamic(
+  () => import("./ResearchConsole").then((module) => module.ResearchConsole),
+  { loading: DemoLoading },
+);
+const UartDmaVisualizer = dynamic(
+  () => import("./UartDmaVisualizer").then((module) => module.UartDmaVisualizer),
+  { loading: DemoLoading },
+);
 
 const PLAYER_WIDTH = 34;
 const PLAYER_HEIGHT = 46;
@@ -29,13 +75,64 @@ const BOUNDS = {
   maxY: WORLD_HEIGHT - PLAYER_HEIGHT - 24,
 };
 
-const achievementsByZone: Partial<Record<ZoneId, string>> = {
-  gaming: "Creative Technologist",
-  firmware: "Firmware Explorer",
-  automation: "Automation Architect",
-  research: "Research Mode",
-  photography: "Visual Storyteller",
-  layercade: "Layercade Maker",
+const achievementsByZone: Partial<Record<ZoneId, { id: AchievementId; label: string }>> = {
+  gaming: { id: "creative-technologist", label: "Creative Technologist" },
+  firmware: { id: "firmware-explorer", label: "Firmware Explorer" },
+  automation: { id: "automation-architect", label: "Automation Architect" },
+  research: { id: "research-mode", label: "Research Mode" },
+  photography: { id: "visual-storyteller", label: "Visual Storyteller" },
+  layercade: { id: "layercade-maker", label: "Layercade Maker" },
+};
+
+const demoAchievements: Partial<Record<DemoId, { id: AchievementId; label: string }>> = {
+  "guided-tour": { id: "guided-tour-complete", label: "Guided Tour Complete" },
+  "ble-scanner": { id: "ble-scanner-online", label: "BLE Scanner Online" },
+  "uart-dma": { id: "dma-path-verified", label: "DMA Path Verified" },
+  "iot-router": { id: "mqtt-publish-success", label: "MQTT Publish Success" },
+  "research-console": { id: "research-analyst", label: "Research Analyst" },
+  "photography-gallery": { id: "gallery-visitor", label: "Gallery Visitor" },
+  "layercade-showcase": { id: "prototype-maker", label: "Prototype Maker" },
+};
+
+const demoHotspots: Partial<Record<HotspotId, DemoId>> = {
+  "ble-scanner-station": "ble-scanner",
+  "uart-dma-visualizer": "uart-dma",
+  "iot-packet-router": "iot-router",
+  "research-console": "research-console",
+  "photo-gallery-wall": "photography-gallery",
+  "layercade-showcase": "layercade-showcase",
+  "terminal-desk": "terminal",
+};
+
+const demoHashes: Partial<Record<DemoId, string>> = {
+  "guided-tour": "guided-tour",
+  "ble-scanner": "ble-scanner",
+  "uart-dma": "uart-dma",
+  "iot-router": "mqtt-router",
+  "research-console": "research",
+  "photography-gallery": "photography",
+  "layercade-showcase": "layercade",
+  terminal: "contact",
+};
+
+const hashTargets: Record<
+  string,
+  { type: "demo"; demoId: DemoId } | { type: "zone"; zoneId: ZoneId }
+> = {
+  "firmware-lab": { type: "zone", zoneId: "firmware" },
+  firmware: { type: "zone", zoneId: "firmware" },
+  "automation-stack": { type: "zone", zoneId: "automation" },
+  automation: { type: "zone", zoneId: "automation" },
+  "ble-scanner": { type: "demo", demoId: "ble-scanner" },
+  "uart-dma": { type: "demo", demoId: "uart-dma" },
+  "mqtt-router": { type: "demo", demoId: "iot-router" },
+  "iot-packet-routing": { type: "demo", demoId: "iot-router" },
+  research: { type: "demo", demoId: "research-console" },
+  "research-console": { type: "demo", demoId: "research-console" },
+  photography: { type: "demo", demoId: "photography-gallery" },
+  layercade: { type: "demo", demoId: "layercade-showcase" },
+  contact: { type: "zone", zoneId: "contact" },
+  "guided-tour": { type: "demo", demoId: "guided-tour" },
 };
 
 const movementKeys: Record<string, Point> = {
@@ -61,9 +158,18 @@ export function PixelGame() {
   const [selectedNpc, setSelectedNpc] = useState<GameNpc | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showRecruiter, setShowRecruiter] = useState(false);
+  const [introReady, setIntroReady] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [showQuickJump, setShowQuickJump] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [ambientSoundEnabled, setAmbientSoundEnabled] = useState(false);
+  const [uiSoundEnabled, setUiSoundEnabled] = useState(false);
+  const [soundVolume, setSoundVolume] = useState(35);
+  const [activeDemo, setActiveDemo] = useState<DemoId | null>(null);
+  const [worldEffects, setWorldEffects] = useState<Set<DemoId>>(() => new Set());
   const [transitioning, setTransitioning] = useState(false);
   const [visitedZones, setVisitedZones] = useState<Set<ZoneId>>(() => new Set(["gaming"]));
-  const [unlockedAchievements, setUnlockedAchievements] = useState<Set<string>>(
+  const [unlockedAchievements, setUnlockedAchievements] = useState<Set<AchievementId>>(
     () => new Set(),
   );
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -73,12 +179,42 @@ export function PixelGame() {
   const animationRef = useRef<number | null>(null);
   const lastFrameRef = useRef<number | null>(null);
   const toastTimerRef = useRef<number | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     positionRef.current = position;
   }, [position]);
 
   const currentZone = useMemo(() => getCurrentZone(position), [position]);
+
+  const handleIntroFinish = useCallback(() => {
+    setIntroReady(true);
+  }, []);
+
+  const playUiSound = useCallback(() => {
+    if (!uiSoundEnabled || typeof window === "undefined") {
+      return;
+    }
+
+    const AudioContextClass =
+      window.AudioContext ??
+      (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) {
+      return;
+    }
+
+    const context = audioContextRef.current ?? new AudioContextClass();
+    audioContextRef.current = context;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "square";
+    oscillator.frequency.value = 520;
+    gain.gain.value = Math.max(soundVolume, 0) / 1000;
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.045);
+  }, [soundVolume, uiSoundEnabled]);
 
   const markZoneVisited = useCallback((zoneId: ZoneId) => {
     setVisitedZones((previous) => {
@@ -92,24 +228,23 @@ export function PixelGame() {
     });
   }, []);
 
-  const showAchievement = useCallback(
-    (zoneId: ZoneId) => {
-      const achievement = achievementsByZone[zoneId];
-      if (!achievement || unlockedAchievements.has(achievement)) {
+  const unlockAchievement = useCallback(
+    (achievement: { id: AchievementId; label: string } | undefined) => {
+      if (!achievement || unlockedAchievements.has(achievement.id)) {
         return;
       }
 
       setUnlockedAchievements((previous) => {
-        if (previous.has(achievement)) {
+        if (previous.has(achievement.id)) {
           return previous;
         }
 
         const next = new Set(previous);
-        next.add(achievement);
+        next.add(achievement.id);
         return next;
       });
 
-      setToastMessage(achievement);
+      setToastMessage(achievement.label);
       if (toastTimerRef.current) {
         window.clearTimeout(toastTimerRef.current);
       }
@@ -117,6 +252,48 @@ export function PixelGame() {
     },
     [unlockedAchievements],
   );
+
+  const showAchievement = useCallback(
+    (zoneId: ZoneId) => {
+      unlockAchievement(achievementsByZone[zoneId]);
+    },
+    [unlockAchievement],
+  );
+
+  const activateWorldEffect = useCallback((demoId: DemoId) => {
+    setWorldEffects((previous) => {
+      if (previous.has(demoId)) {
+        return previous;
+      }
+
+      const next = new Set(previous);
+      next.add(demoId);
+      return next;
+    });
+  }, []);
+
+  const openDemo = useCallback((demoId: DemoId) => {
+    keysPressed.current.clear();
+    playUiSound();
+    setSelectedHotspot(null);
+    setSelectedNpc(null);
+    setShowWelcome(false);
+    setShowRecruiter(false);
+    setShowQuickJump(false);
+    setShowHelp(false);
+    setShowAbout(false);
+    setActiveDemo(demoId);
+    trackPortfolioEvent("demo_opened", { demo: demoId });
+
+    const hash = demoHashes[demoId];
+    if (hash && window.location.hash !== `#${hash}`) {
+      window.history.replaceState(null, "", `#${hash}`);
+    }
+  }, [playUiSound]);
+
+  const closeDemo = useCallback(() => {
+    setActiveDemo(null);
+  }, []);
 
   const updateMoving = useCallback((isMoving: boolean) => {
     if (movingRef.current !== isMoving) {
@@ -134,34 +311,60 @@ export function PixelGame() {
 
   const inspectActiveTarget = useCallback(() => {
     if (activeNpc) {
+      playUiSound();
       showAchievement(activeNpc.zoneId);
       setSelectedNpc(activeNpc);
       return;
     }
 
     if (activeHotspot) {
+      playUiSound();
       showAchievement(activeHotspot.zoneId);
+      const demoId = demoHotspots[activeHotspot.id];
+      if (demoId) {
+        openDemo(demoId);
+        return;
+      }
       setSelectedHotspot(activeHotspot);
     }
-  }, [activeHotspot, activeNpc, showAchievement]);
+  }, [activeHotspot, activeNpc, openDemo, playUiSound, showAchievement]);
 
   const inspectHotspot = useCallback(
     (hotspot: Hotspot) => {
+      playUiSound();
       showAchievement(hotspot.zoneId);
+      const demoId = demoHotspots[hotspot.id];
+      if (demoId) {
+        openDemo(demoId);
+        return;
+      }
       setSelectedHotspot(hotspot);
     },
-    [showAchievement],
+    [openDemo, playUiSound, showAchievement],
   );
 
   const talkToNpc = useCallback(
     (npc: GameNpc) => {
+      playUiSound();
       showAchievement(npc.zoneId);
       setSelectedNpc(npc);
     },
-    [showAchievement],
+    [playUiSound, showAchievement],
   );
 
   const closeTopLayer = useCallback(() => {
+    if (showQuickJump) {
+      setShowQuickJump(false);
+      return;
+    }
+    if (showHelp) {
+      setShowHelp(false);
+      return;
+    }
+    if (showAbout) {
+      setShowAbout(false);
+      return;
+    }
     if (selectedNpc) {
       setSelectedNpc(null);
       return;
@@ -174,10 +377,23 @@ export function PixelGame() {
       setShowRecruiter(false);
       return;
     }
+    if (activeDemo) {
+      setActiveDemo(null);
+      return;
+    }
     if (showWelcome) {
       setShowWelcome(false);
     }
-  }, [selectedHotspot, selectedNpc, showRecruiter, showWelcome]);
+  }, [
+    activeDemo,
+    selectedHotspot,
+    selectedNpc,
+    showAbout,
+    showHelp,
+    showQuickJump,
+    showRecruiter,
+    showWelcome,
+  ]);
 
   const jumpToZone = useCallback(
     (zoneId: ZoneId) => {
@@ -187,8 +403,14 @@ export function PixelGame() {
       }
 
       keysPressed.current.clear();
+      playUiSound();
       setShowRecruiter(false);
+      setShowQuickJump(false);
+      setShowHelp(false);
+      setShowAbout(false);
+      setActiveDemo(null);
       setTransitioning(true);
+      window.history.replaceState(null, "", `#${zone.id === "firmware" ? "firmware-lab" : zone.id}`);
       window.setTimeout(() => {
         positionRef.current = zone.jumpPosition;
         setPosition(zone.jumpPosition);
@@ -197,6 +419,23 @@ export function PixelGame() {
         showAchievement(zone.id);
         window.setTimeout(() => setTransitioning(false), 180);
       }, 160);
+    },
+    [markZoneVisited, playUiSound, showAchievement],
+  );
+
+  const focusTourZone = useCallback(
+    (zoneId: ZoneId) => {
+      const zone = gameZones.find((candidate) => candidate.id === zoneId);
+      if (!zone) {
+        return;
+      }
+
+      keysPressed.current.clear();
+      positionRef.current = zone.jumpPosition;
+      setPosition(zone.jumpPosition);
+      setDirection("down");
+      markZoneVisited(zone.id);
+      showAchievement(zone.id);
     },
     [markZoneVisited, showAchievement],
   );
@@ -216,7 +455,47 @@ export function PixelGame() {
         return;
       }
 
-      if (showWelcome || selectedHotspot || selectedNpc || showRecruiter || transitioning) {
+      const interactiveTarget = isInteractiveTarget(event.target);
+
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        if (!showQuickJump) {
+          setShowQuickJump(true);
+        }
+        return;
+      }
+
+      if (interactiveTarget) {
+        return;
+      }
+
+      if (event.key === "?") {
+        setShowHelp(true);
+        return;
+      }
+
+      if (
+        showWelcome ||
+        selectedHotspot ||
+        selectedNpc ||
+        showRecruiter ||
+        showHelp ||
+        showQuickJump ||
+        showAbout ||
+        activeDemo ||
+        transitioning
+      ) {
+        return;
+      }
+
+      if (event.key === "m" || event.key === "M") {
+        trackPortfolioEvent("recruiter_mode_opened", { source: "keyboard" });
+        setShowRecruiter(true);
+        return;
+      }
+
+      if (event.key === "t" || event.key === "T") {
+        openDemo("guided-tour");
         return;
       }
 
@@ -225,7 +504,7 @@ export function PixelGame() {
         return;
       }
 
-      if (movementKeys[event.key] && !isInteractiveTarget(event.target)) {
+      if (movementKeys[event.key]) {
         event.preventDefault();
         keysPressed.current.add(event.key);
       }
@@ -243,10 +522,15 @@ export function PixelGame() {
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, [
+    activeDemo,
     closeTopLayer,
     inspectActiveTarget,
+    openDemo,
     selectedHotspot,
     selectedNpc,
+    showAbout,
+    showHelp,
+    showQuickJump,
     showRecruiter,
     showWelcome,
     transitioning,
@@ -258,7 +542,17 @@ export function PixelGame() {
       const deltaSeconds = Math.min((timestamp - previous) / 1000, 0.04);
       lastFrameRef.current = timestamp;
 
-      if (!showWelcome && !selectedHotspot && !selectedNpc && !showRecruiter && !transitioning) {
+      if (
+        !showWelcome &&
+        !selectedHotspot &&
+        !selectedNpc &&
+        !showRecruiter &&
+        !showHelp &&
+        !showQuickJump &&
+        !showAbout &&
+        !activeDemo &&
+        !transitioning
+      ) {
         const vector = getMovementVector(keysPressed.current);
         const isMoving = vector.x !== 0 || vector.y !== 0;
         updateMoving(isMoving);
@@ -291,9 +585,13 @@ export function PixelGame() {
       }
     };
   }, [
+    activeDemo,
     markZoneVisited,
     selectedHotspot,
     selectedNpc,
+    showAbout,
+    showHelp,
+    showQuickJump,
     showRecruiter,
     showWelcome,
     transitioning,
@@ -305,8 +603,45 @@ export function PixelGame() {
       if (toastTimerRef.current) {
         window.clearTimeout(toastTimerRef.current);
       }
+      void audioContextRef.current?.close();
     };
   }, []);
+
+  useEffect(() => {
+    const applyHashTarget = () => {
+      const key = window.location.hash.replace("#", "").trim().toLowerCase();
+      if (!key) {
+        return;
+      }
+
+      const target = hashTargets[key];
+      if (!target) {
+        return;
+      }
+
+      if (target.type === "demo") {
+        openDemo(target.demoId);
+        return;
+      }
+
+      const zone = gameZones.find((candidate) => candidate.id === target.zoneId);
+      if (!zone) {
+        return;
+      }
+
+      keysPressed.current.clear();
+      positionRef.current = zone.jumpPosition;
+      setPosition(zone.jumpPosition);
+      setDirection("down");
+      markZoneVisited(zone.id);
+      showAchievement(zone.id);
+      setShowWelcome(false);
+    };
+
+    applyHashTarget();
+    window.addEventListener("hashchange", applyHashTarget);
+    return () => window.removeEventListener("hashchange", applyHashTarget);
+  }, [markZoneVisited, openDemo, showAchievement]);
 
   const nudge = (x: number, y: number) => {
     keysPressed.current.clear();
@@ -330,12 +665,17 @@ export function PixelGame() {
 
   return (
     <main className={styles.gamePage}>
+      <CinematicIntro onFinish={handleIntroFinish} />
       <RecruiterOverlay
         open={showRecruiter}
         zones={gameZones}
         onClose={() => setShowRecruiter(false)}
         onJumpToZone={jumpToZone}
-        onOpen={() => setShowRecruiter(true)}
+        onOpen={() => {
+          trackPortfolioEvent("recruiter_mode_opened", { source: "floating_button" });
+          setShowRecruiter(true);
+        }}
+        onOpenDemo={openDemo}
       />
 
       <section className={styles.headerBar} aria-label="Game portfolio header">
@@ -343,10 +683,27 @@ export function PixelGame() {
           <p className={styles.kicker}>/game</p>
           <h1>Raqueed&apos;s Interactive Engineering Apartment</h1>
         </div>
-        <p>
-          Explore a cozy cyberpunk apartment for embedded firmware, automation,
-          research, photography, 3D printing, and workstation storytelling.
-        </p>
+        <div className={styles.headerCopy}>
+          <p>
+            Explore embedded firmware, automation, research, photography, 3D printing,
+            and interactive engineering systems.
+          </p>
+          <div className={styles.headerActions}>
+            <button type="button" onClick={() => openDemo("guided-tour")}>
+              Start Recruiter Tour
+            </button>
+            <button type="button" onClick={() => setShowQuickJump(true)}>
+              Search
+            </button>
+            <button type="button" onClick={() => setShowHelp(true)} aria-label="Open keyboard shortcut help">
+              Help
+            </button>
+            <button type="button" onClick={() => setShowAbout(true)}>
+              About
+            </button>
+          </div>
+          <ViewToggle />
+        </div>
       </section>
 
       <section className={styles.gameShell} aria-label="Playable portfolio apartment">
@@ -354,11 +711,13 @@ export function PixelGame() {
           className={[
             styles.sceneFrame,
             transitioning ? styles.sceneTransitioning : null,
+            ambientSoundEnabled ? styles.sceneAmbientOn : null,
           ]
             .filter(Boolean)
             .join(" ")}
         >
           <GameWorld>
+            <WorldFeedback activeEffects={worldEffects} />
             <ZoneIndicator currentZone={currentZone} visitedZones={visitedZones} />
 
             {gameHotspots.map((hotspot) => (
@@ -381,7 +740,7 @@ export function PixelGame() {
 
             <Player direction={direction} moving={moving} position={position} />
 
-            {promptText && !selectedHotspot && !selectedNpc && !showWelcome && !showRecruiter ? (
+            {promptText && !selectedHotspot && !selectedNpc && !showWelcome && !showRecruiter && !activeDemo ? (
               <div className={styles.inspectPrompt} role="status">
                 <kbd>E</kbd> {promptText.replace("Press E ", "")}
               </div>
@@ -392,9 +751,34 @@ export function PixelGame() {
         </div>
 
         <aside className={styles.statusPanel} aria-label="Current apartment status">
+          <div className={styles.hudCard}>
+            <span>Quick Actions</span>
+            <div className={styles.hudButtonGrid}>
+              <button type="button" onClick={() => setShowRecruiter(true)}>
+                Recruiter
+              </button>
+              <button type="button" onClick={() => setShowQuickJump(true)}>
+                Ctrl+K
+              </button>
+              <button type="button" onClick={() => openDemo("guided-tour")}>
+                Tour
+              </button>
+              <button type="button" onClick={() => setShowHelp(true)}>
+                ?
+              </button>
+            </div>
+          </div>
+          <SoundControls
+            ambientEnabled={ambientSoundEnabled}
+            uiEnabled={uiSoundEnabled}
+            volume={soundVolume}
+            onAmbientChange={setAmbientSoundEnabled}
+            onUiChange={setUiSoundEnabled}
+            onVolumeChange={setSoundVolume}
+          />
           <div>
             <span>Controls</span>
-            <p>WASD / Arrow Keys to move. E to inspect or talk. Esc closes panels.</p>
+            <p>WASD / Arrow Keys to move. E to inspect or talk. Esc closes panels. Press ? for help.</p>
           </div>
           <div>
             <span>Current Zone</span>
@@ -410,42 +794,159 @@ export function PixelGame() {
                   : "Walk near an object or helper"}
             </p>
           </div>
+          <div className={styles.mobileFallbackMessage}>
+            <span>Mobile</span>
+            <p>All core content is reachable through Recruiter Mode and Search when touch movement is cramped.</p>
+          </div>
         </aside>
 
         <div className={styles.mobileControls} aria-label="Touch controls">
           <p>
-            Touch controls are available, though the full pixel portfolio
-            experience is best on desktop.
+            Touch controls are available, though the full interactive engineering
+            lab experience is best on desktop.
           </p>
           <div className={styles.touchGrid}>
             <button type="button" onClick={() => nudge(0, -38)} aria-label="Move up">
-              ↑
+              Up
             </button>
             <button type="button" onClick={() => nudge(-38, 0)} aria-label="Move left">
-              ←
+              Left
             </button>
             <button type="button" onClick={inspectActiveTarget} aria-label="Inspect nearby target">
               E
             </button>
             <button type="button" onClick={() => nudge(38, 0)} aria-label="Move right">
-              →
+              Right
             </button>
             <button type="button" onClick={() => nudge(0, 38)} aria-label="Move down">
-              ↓
+              Down
             </button>
           </div>
         </div>
       </section>
 
-      {showWelcome ? <OnboardingDialog onClose={() => setShowWelcome(false)} /> : null}
+      <ImpactCards onJumpToZone={jumpToZone} onOpenDemo={openDemo} />
+
+      {showWelcome && introReady ? <OnboardingDialog onClose={() => setShowWelcome(false)} /> : null}
       {selectedHotspot ? (
         <InteractionModal
           hotspot={selectedHotspot}
           onClose={() => setSelectedHotspot(null)}
+          onOpenDemo={
+            selectedHotspot.id === "gaming-setup" ? () => openDemo("terminal") : undefined
+          }
         />
       ) : null}
       {selectedNpc ? <DialogBox npc={selectedNpc} onClose={() => setSelectedNpc(null)} /> : null}
+
+      {activeDemo === "guided-tour" ? (
+        <GuidedTour
+          onClose={closeDemo}
+          onComplete={() => unlockAchievement(demoAchievements["guided-tour"])}
+          onFocusZone={focusTourZone}
+          onJumpToZone={jumpToZone}
+        />
+      ) : null}
+      {activeDemo === "terminal" ? (
+        <GameTerminal
+          onClose={closeDemo}
+          onCommandAchievement={(command) => {
+            if (command === "scan_ble") {
+              unlockAchievement(demoAchievements["ble-scanner"]);
+              activateWorldEffect("ble-scanner");
+            }
+            if (command === "uart_status" || command === "dma_status") {
+              unlockAchievement(demoAchievements["uart-dma"]);
+              activateWorldEffect("uart-dma");
+            }
+            if (command === "mqtt_status") {
+              unlockAchievement(demoAchievements["iot-router"]);
+              activateWorldEffect("iot-router");
+            }
+            if (command === "publications") {
+              unlockAchievement(demoAchievements["research-console"]);
+            }
+          }}
+        />
+      ) : null}
+      {activeDemo === "ble-scanner" ? (
+        <BLEScannerDemo
+          onClose={closeDemo}
+          onInspectDevice={() => unlockAchievement(demoAchievements["ble-scanner"])}
+          onScanStart={() => {
+            unlockAchievement(demoAchievements["ble-scanner"]);
+            activateWorldEffect("ble-scanner");
+          }}
+        />
+      ) : null}
+      {activeDemo === "uart-dma" ? (
+        <UartDmaVisualizer
+          onClose={closeDemo}
+          onStart={() => {
+            unlockAchievement(demoAchievements["uart-dma"]);
+            activateWorldEffect("uart-dma");
+          }}
+        />
+      ) : null}
+      {activeDemo === "iot-router" ? (
+        <IoTPacketRouter
+          onClose={closeDemo}
+          onStart={() => {
+            unlockAchievement(demoAchievements["iot-router"]);
+            activateWorldEffect("iot-router");
+          }}
+        />
+      ) : null}
+      {activeDemo === "research-console" ? (
+        <ResearchConsole
+          onClose={closeDemo}
+          onAnalyze={() => {
+            unlockAchievement(demoAchievements["research-console"]);
+            activateWorldEffect("research-console");
+          }}
+        />
+      ) : null}
+      {activeDemo === "photography-gallery" ? (
+        <PhotographyGallery
+          onClose={closeDemo}
+          onVisit={() => unlockAchievement(demoAchievements["photography-gallery"])}
+        />
+      ) : null}
+      {activeDemo === "layercade-showcase" ? (
+        <LayercadeShowcase
+          onClose={closeDemo}
+          onStartPrint={() => {
+            unlockAchievement(demoAchievements["layercade-showcase"]);
+            activateWorldEffect("layercade-showcase");
+          }}
+        />
+      ) : null}
+      {showHelp ? <HelpOverlay onClose={() => setShowHelp(false)} /> : null}
+      {showQuickJump ? (
+        <QuickJumpOverlay
+          onClose={() => setShowQuickJump(false)}
+          onJumpToZone={jumpToZone}
+          onOpenDemo={openDemo}
+        />
+      ) : null}
+      {showAbout ? <AboutExperienceModal onClose={() => setShowAbout(false)} /> : null}
     </main>
+  );
+}
+
+function DemoLoading() {
+  return (
+    <div className={styles.modalBackdrop} role="status" aria-live="polite">
+      <section className={`${styles.modalCard} ${styles.loadingDemoCard}`}>
+        <p className={styles.kicker}>Loading demo</p>
+        <div className={styles.pixelLoader} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+      </section>
+    </div>
   );
 }
 
